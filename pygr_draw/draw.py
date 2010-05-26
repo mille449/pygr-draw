@@ -62,7 +62,7 @@ class Draw(object):
             fp = fp_or_filename         # it's a file handle!
             do_close = False
         except AttributeError:
-            fp = open(fp_or_filename, 'w') # it's a filename!
+            fp = open(fp_or_filename, 'wb') # it's a filename!
             do_close = True
 
         picture = self.draw(seq)
