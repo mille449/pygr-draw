@@ -20,19 +20,7 @@ class PythonList(BaseSequencePicture):
     SUFFIX = '.FOO'
     
     colors = colors
-    SEQUENCE_HEIGHT = 2
     
-    SEQUENCE_TICK_HEIGHT = 6
-    SEQUENCE_TICK_WIDTH = 2
-    
-    SEQUENCE_BASE = 50                 # horizontal margin
-    SEQUENCE_OFFSET = 50               # vertical margin
-    SEQUENCE_TEXT_OFFSET = 48          # vertical margin for text
-
-    FEATURE_HEIGHT = 8
-    THIN_FEATURE_HEIGHT = 2
-    THIN_FEATURE_OFFSET = 3
-    FEATURE_SPACING = 12
     
     def __init__(self, sequence_length, size=(1000,1000)):
         self.feature_list = []

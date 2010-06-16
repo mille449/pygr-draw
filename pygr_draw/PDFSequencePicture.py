@@ -12,20 +12,13 @@ class PDFSequencePicture(BaseSequencePicture):
     
     colors = colors
     
-    SEQUENCE_HEIGHT = 2
-    
-    SEQUENCE_TICK_HEIGHT = 6
-    SEQUENCE_TICK_WIDTH = 2
-    
+   
     SEQUENCE_BASE = 100                 # horizontal margin
     SEQUENCE_OFFSET = 100               # vertical margin
 
     TEXT_OFFSET = 8
     
-    FEATURE_HEIGHT = 8
-    THIN_FEATURE_HEIGHT = 2
-    THIN_FEATURE_OFFSET = 3
-    FEATURE_SPACING = 12
+
     
     def __init__(self, sequence_length):
         self.w, self.h = landscape(letter)
@@ -67,8 +60,8 @@ class PDFSequencePicture(BaseSequencePicture):
             start_x = self.SEQUENCE_BASE + int(loc * self.seq_to_canvas / float(self.seqlen) * self.resolution)
             self.canvas.rect(start_x, start_y, w, h, fill=1)
 
-    def _calc_textsize(self, name):
-        text_size = len(name)*5
+    def _calc_textsize(self, text):
+        text_size = len(text)*5
         return [text_size]
     
     def _draw_feature(self, slot, start, stop, color=None, name=''):

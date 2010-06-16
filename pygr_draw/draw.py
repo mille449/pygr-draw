@@ -14,6 +14,8 @@ def get_picture_class(suffix='png'):
         from PDFSequencePicture import PDFSequencePicture as klass
     elif suffix == 'png':
         from BitmapSequencePicture import BitmapSequencePicture as klass
+    elif suffix == "js":
+        from JSONSequencePicture import JSONSequencePicture as klass
 
     return klass
 

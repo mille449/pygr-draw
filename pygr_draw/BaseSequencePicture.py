@@ -6,10 +6,25 @@ from pygr import seqdb, cnestedlist
 class BaseSequencePicture(object):
     SUFFIX = None                       # must define
     colors = None                       # must define
-    
+
+    SEQUENCE_HEIGHT = 2
+
+    SEQUENCE_TICK_HEIGHT = 6
+    SEQUENCE_TICK_WIDTH = 2
+
+    SEQUENCE_BASE = 50                 # horizontal margin
+    SEQUENCE_OFFSET = 50               # vertical margin
+    SEQUENCE_TEXT_OFFSET = 48          # vertical margin for text
+
+    FEATURE_HEIGHT = 8
+    THIN_FEATURE_HEIGHT = 2
+    THIN_FEATURE_OFFSET = 3
+    FEATURE_SPACING = 12
+
     def __init__(self, sequence_length, resolution):
         # sequence_length is used only to calculate the tick spacing
         self.sequence_length = sequence_length
+        
 
         # resolution controls the granularity used to calculate overlaps.
         self.resolution = resolution
@@ -19,12 +34,40 @@ class BaseSequencePicture(object):
         self.left_margin_offset = 0
 
     def draw_sequence_line(self):
+        '''
+        Draw the black line at the top representing the sequence with ticks
+        indicating resolution.
+        '''
         raise NotImplementedError
 
-    def _draw_feature(self, slot, start, stop, color=None):
+    def _draw_feature(self, slot, start, stop, color=None, name=''):
+        '''
+        Draw an annotation, or part of an annotation, as a thick line.
+        '''
         raise NotImplementedError
 
+    def _draw_feature_name(self, name, start_x, slot):
+        '''
+        Draw the name of the annotation next to it.
+        '''
+        raise NotImplementedError
+
+    def _draw_thin_feature(self, slot, start, stop, color=None):
+        '''
+        Draw an annotation as a thin line.
+        '''
+        raise NotImplementedError
+
+    def _calc_textsize(self, text):
+        '''
+        Calculate the width of the text label for an annotation.
+        '''
+        raise NotImplementedError
+    
     def finalize(self):
+        '''
+        Returns the image as a string that can be written to a file.
+        '''
         raise NotImplementedError
 
     def set_left_margin_offset(self, x):
