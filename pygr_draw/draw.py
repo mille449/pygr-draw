@@ -15,7 +15,8 @@ def get_picture_class(suffix='png'):
     elif suffix == 'png':
         from BitmapSequencePicture import BitmapSequencePicture as klass
     elif suffix == "js":
-        from JSONSequencePicture import JSONSequencePicture as klass
+        #from JSONSequencePicture import JSONSequencePicture as klass
+        from PythonList import PythonList as klass
 
     return klass
 

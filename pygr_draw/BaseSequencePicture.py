@@ -52,7 +52,7 @@ class BaseSequencePicture(object):
         '''
         raise NotImplementedError
 
-    def _draw_thin_feature(self, slot, start, stop, color=None):
+    def _draw_thin_feature(self, slot, start, stop, color=None, name=''):
         '''
         Draw an annotation as a thin line.
         '''
@@ -107,7 +107,8 @@ class BaseSequencePicture(object):
 
             if is_group:
                 self._draw_feature_name(annotation.name, feat_start, slot)
-                self._draw_thin_feature(slot, feat_start, stop, color=color)
+                self._draw_thin_feature(slot, feat_start, stop, color=color,
+                    name=annotation.name)
 
                 for (start, stop) in annotation.annots:
                     self._draw_feature(slot, start, stop, color)
