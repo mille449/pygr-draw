@@ -68,7 +68,7 @@ class PythonList(BaseSequencePicture):
         
  
     def finalize(self):
-        return "annots="+json.dumps(self.feature_list)
+        return json.dumps(self.feature_list)
 
 
 
