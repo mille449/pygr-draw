@@ -10,16 +10,21 @@ def sort_by_name(a, b):
     return cmp(a.name, b.name)
 
 def stack_annotations(seq, nlmsa, sort_annotations_by=sort_by_length):
+    #print "Starting slot calculations... "
+    
     slots_d = {}
 
     # get a list of all annotations on this sequence.
     annotations = list(nlmsa[seq])
+    #print "got list of all annotations: %d total" % len(annotations)
 
     if sort_annotations_by:
         annotations.sort(sort_annotations_by) # e.g. length
 
+    #remaining = len(annotations)
     for annotation in annotations:
-            
+        #print "remaining %d" % remaining
+        #remaining-=1
         assert not slots_d.has_key(annotation.id)
 
         subseq = annotation.sequence
@@ -60,5 +65,6 @@ def stack_annotations(seq, nlmsa, sort_annotations_by=sort_by_length):
         # save in dictionary
         slots_d[annotation.id] = slot
 
+    #print "Finished slot calculations!!"
     return slots_d
 

@@ -54,10 +54,10 @@ class PythonList(BaseSequencePicture):
         
 
     def _calc_textsize(self, text):
-        return self.draw.textsize(text)
+        return [len(text)*7]
 
     def _draw_thin_feature(self, slot, start, stop, color=None, name=''):
-        self.feature_list.append(("thin"+name,#indicator for a thin line
+        self.feature_list.append(("thin"+name,# good indicator for a thin line?
                                   slot,
                                   int(start),
                                   int(stop),
