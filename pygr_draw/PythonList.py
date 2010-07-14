@@ -23,7 +23,7 @@ class PythonList(BaseSequencePicture):
     colors = colors
     
     
-    def __init__(self, sequence_length, size=(1000,1000)):
+    def __init__(self, sequence_length, size=(1000,5000)):
 
         self.feature_list = []
         self.size = size
@@ -54,7 +54,6 @@ class PythonList(BaseSequencePicture):
         
 
     def _calc_textsize(self, text):
-        return [1];
         return self.draw.textsize(text)
 
     def _draw_thin_feature(self, slot, start, stop, color=None, name=''):
@@ -68,7 +67,7 @@ class PythonList(BaseSequencePicture):
         
  
     def finalize(self):
-        return "annots="+json.dumps(self.feature_list)
+        return json.dumps(self.feature_list)
 
 
 
