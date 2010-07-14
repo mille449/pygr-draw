@@ -154,9 +154,7 @@ class JSONSequencePicture(BaseSequencePicture):
         Returns the image as a string that can be written to a file.
         '''
         fp = StringIO()
-        fp.write("annots=")
-        json.dump({"rectangles":self.rectangles, "texts":self.texts}, fp, indent=4) # indent is for pretty printing
-        fp.write(";")
+        json.dump({"rectangles":self.rectangles, "texts":self.texts}, fp)#, indent=4) # indent is for pretty printing
 
         return fp.getvalue()
         
