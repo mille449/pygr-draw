@@ -1,4 +1,5 @@
 
+
 var indent = "";
 function var_dump(arr, showTypes){
     var result = "";
@@ -276,7 +277,8 @@ function Draw(){
 
 
     var j = new JSONSequencePicture(annots.length);
-    var rectangles= j.draw_annotations(annots);
+    // var rectangles= j.draw_annotations(annots);
+    var rectangles=annots;
 
 
 

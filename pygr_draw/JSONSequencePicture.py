@@ -7,36 +7,37 @@ import json
 class ColorList(object):
     pass
 
-colors = ColorList()
-colors.white = "#ffffff"
-colors.red = "#ff0000"
-colors.green = "#00ff00"
-colors.blue = "#0000ff"
-colors.orange = "#ff8040"
-colors.purple = "#800080"
-colors.black = "#000000"
+colours = ColorList()
+colours.white = "#ffffff"
+colours.red = "#ff0000"
+colours.green = "#00ff00"
+colours.blue = "#0000ff"
+colours.orange = "#ff8040"
+colours.purple = "#800080"
+colours.black = "#000000"
 
 class JSONSequencePicture(BaseSequencePicture):
     SUFFIX = '.js'
-
-    colors = colors
+    colors = colours
+    
 
     rectangles = [];
     texts = [];
 
-    def __init__(self, sequence_length, size=(1000,5000)):
+    def __init__(self, sequence, size=(1000,5000)):
         self.size = size
         resolution = size[0] / 2        # good default?
 
-        BaseSequencePicture.__init__(self, sequence_length, resolution)
+        BaseSequencePicture.__init__(self, sequence, resolution)
 
         # for final y-cropping.
-        self.max_y = 2*self.SEQUENCE_OFFSET + self.SEQUENCE_HEIGHT
+        self.max_y = 2*self.VERTICAL_MARGIN + self.SEQUENCE_HEIGHT
         self.set_left_margin_offset(0)
+        
 
     def set_left_margin_offset(self, x):
         x = int(x)
-        self.left_margin_offset = x + self.SEQUENCE_BASE
+        self.left_margin_offset = x + self.HORIZONTAL_MARGIN
 
         self.w = self.size[0] + x
         self.h = self.size[1]
@@ -44,7 +45,7 @@ class JSONSequencePicture(BaseSequencePicture):
 #        self.image = Image.new("RGB", (self.w + x, self.h), colors.white)
 #        self.draw = ImageDraw.Draw(self.image)
 
-        canvas_width = self.w - self.SEQUENCE_BASE - self.left_margin_offset
+        canvas_width = self.w - self.HORIZONTAL_MARGIN - self.left_margin_offset
         self.seq_to_canvas = float(canvas_width) / float(self.resolution)
 
 
@@ -54,32 +55,31 @@ class JSONSequencePicture(BaseSequencePicture):
         indicating resolution.
         '''
         start_x = self.left_margin_offset
-        start_y = self.SEQUENCE_OFFSET + self.SEQUENCE_TICK_HEIGHT / 2 \
+        start_y = self.VERTICAL_MARGIN + self.SEQUENCE_TICK_HEIGHT / 2 \
                   - self.SEQUENCE_HEIGHT / 2
 
-        w = self.w - self.SEQUENCE_BASE - self.left_margin_offset
+        w = self.w - self.HORIZONTAL_MARGIN - self.left_margin_offset
         h = self.SEQUENCE_HEIGHT
 
         self.rectangles.append(({"rect":(start_x, start_y, w, h ),
-                            "fill":colors.black}))
+                            "fill":self.colors.black}))
 
-        self._calc_tick_spacing()
-        n_ticks = self.sequence_length / self.TICKSPACING
-        ticklocations = [ i * self.TICKSPACING for i in range(n_ticks + 1) ]
 
-        start_y = self.SEQUENCE_OFFSET
+        start_y = self.VERTICAL_MARGIN
 
-        # conversion factor
-        w = self.w - self.SEQUENCE_BASE - self.left_margin_offset
-        seq_to_canvas = float(w) / float(self.sequence_length)
-
-        for loc in ticklocations:
-            start_x = self.left_margin_offset + int(loc * seq_to_canvas)
+        # draw the ticks
+        for loc in self.ticks.iterkeys():
+            start_x = loc * (w - self.SEQUENCE_TICK_WIDTH) + self.left_margin_offset
 
             self.rectangles.append(({"rect":(start_x, start_y,
                                     self.SEQUENCE_TICK_WIDTH,
                                     self.SEQUENCE_TICK_HEIGHT),
-                                    "fill":colors.black}))
+                                    "fill":self.colors.black}))
+            
+            textsize = self._calc_textsize(self.ticks[loc])[0]/2
+            self.texts.append(({"text":(self.ticks[loc], start_x - textsize, \
+                                start_y-self.SEQUENCE_TICK_HEIGHT / 2), \
+                                "fill":self.colors.black} ))
         
 
     def _draw_feature(self, slot, start, stop, color=None, name=''):
@@ -89,7 +89,7 @@ class JSONSequencePicture(BaseSequencePicture):
         if color is None:
             color = self.colors.red
 
-        start_y = self.SEQUENCE_OFFSET + (slot+1)*self.FEATURE_SPACING
+        start_y = self.VERTICAL_MARGIN + (slot+1)*self.FEATURE_SPACING
 
         start_x = int(start*self.seq_to_canvas + 0.5) + self.left_margin_offset
         width = int( float(stop - start) * self.seq_to_canvas + 0.5 )
@@ -98,7 +98,7 @@ class JSONSequencePicture(BaseSequencePicture):
         assert width > 0
 
         self.rectangles.append(({"rect":(start_x, start_y, width, self.FEATURE_HEIGHT ),
-                            "fill":color, "outline":colors.black}))
+                            "fill":color, "outline":self.colors.black}))
         self.max_y = max(start_y + self.FEATURE_HEIGHT, self.max_y)
 
 
@@ -109,12 +109,12 @@ class JSONSequencePicture(BaseSequencePicture):
         start_x = int( float(start_x) * self.seq_to_canvas + 0.5)
         start_x += self.left_margin_offset
 
-        start_y = self.SEQUENCE_TEXT_OFFSET + (slot + 1.75)*self.FEATURE_SPACING
+        start_y = self.VERTICAL_MARGIN_TEXT + (slot + 1.75)*self.FEATURE_SPACING
 
         # use js to calculate text width and x poisitioning
-        xsize = self._calc_textsize(name)[0]
-        self.texts.append(({"text":(name, start_x - xsize, start_y),
-                            "fill":colors.black} ))
+        textsize = self._calc_textsize(name)[0]
+        self.texts.append(({"text":(name, start_x - textsize, start_y),
+                            "fill":self.colors.black} ))
 
 
     def _calc_textsize(self, text):
@@ -125,22 +125,22 @@ class JSONSequencePicture(BaseSequencePicture):
         return [text_size]
 
 
-    def _draw_thin_feature(self, slot, start, stop, color=None):
+    def _draw_thin_feature(self, slot, start, stop, color=None, name=''):
         '''
         Draw an annotation as a thin line.
         '''
         if color is None:
             color = self.colors.red
 
-        start_y = self.SEQUENCE_OFFSET + (slot+1)*self.FEATURE_SPACING +\
+        start_y = self.VERTICAL_MARGIN + (slot+1)*self.FEATURE_SPACING +\
                   self.THIN_FEATURE_OFFSET
 
         start_x = int(start*self.seq_to_canvas+0.5) + self.left_margin_offset
         width = int( float(stop - start) * self.seq_to_canvas + 0.5)
         width = max(width, 1)
 
-#        if width + start_x > self.w - self.SEQUENCE_OFFSET:
-#            width = self.w - self.SEQUENCE_OFFSET - start_x
+#        if width + start_x > self.w - self.VERTICAL_MARGIN:
+#            width = self.w - self.VERTICAL_MARGIN - start_x
 
         self.rectangles.append(({"rect":(start_x, start_y, width,
                                 self.THIN_FEATURE_HEIGHT),
@@ -156,5 +156,5 @@ class JSONSequencePicture(BaseSequencePicture):
         fp = StringIO()
         json.dump({"rectangles":self.rectangles, "texts":self.texts}, fp)#, indent=4) # indent is for pretty printing
 
-        return fp.getvalue()
+        return "annots="+fp.getvalue()
         

@@ -7,7 +7,7 @@ sequence_name ='chrI'
 import pygr_draw
 from pygr_draw import Annotation
 
-image = pygr_draw.Draw('json-canvas-example.js')
+image = pygr_draw.Draw('json-canvas-example.json')
 colors = image.colors
 
 ###
@@ -42,7 +42,7 @@ print 'Output in', image.filename
 #import pygr_draw
 #from pygr_draw import AnnotationGroup, Annotation
 #
-#image = pygr_draw.Draw('json-canvas-example.js')
+#image = pygr_draw.Draw('json-canvas-example.json')
 #colors = image.colors
 #
 #annots = []
